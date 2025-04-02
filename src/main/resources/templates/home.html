@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Clothes Warehouse</title>
+    <link rel="stylesheet" th:href="@{/styles/styles.css}"/>
+</head>
+<body>
+<h1>Welcome to the Clothes Warehouse Application</h1>
+<img th:src="@{https://picsum.photos/500/400}" alt="Warehouse Image">
+<div class="button-container">
+    <a th:href="@{/warehouse}" class="button">Add New Clothes</a>
+    <a th:href="@{/warehouse/clothes}" class="button">View All Clothes</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Clothes Warehouse - Add Clothes</title>
+  <link rel="stylesheet" th:href="@{/styles/styles.css}"/>
+  <script>
+    function validateForm() {
+      let isValid = true;
+      const name = document.forms["clothesForm"]["name"].value;
+      const brand = document.forms["clothesForm"]["brand"].value;
+      const year = document.forms["clothesForm"]["year"].value;
+      const price = document.forms["clothesForm"]["price"].value;
+
+      if (name === "") {
+        alert("Name must be filled out");
+        isValid = false;
+      }
+      if (brand === "") {
+        alert("Brand must be filled out");
+        isValid = false;
+      }
+      if (year === "" || year < 2000 || year > 2025) {
+        alert("Year must be between 2000 and 2025");
+        isValid = false;
+      }
+      if (price === "" || price <= 0) {
+        alert("Price must be greater than 0");
+        isValid = false;
+      }
+      return isValid;
+    }
+  </script>
+</head>
+<body>
+<h1>Add New Clothing Item</h1>
+
+<form method="POST" th:action="@{/warehouse}" th:object="${clothes}" name="clothesForm" onsubmit="return validateForm()">
+  <div class="item-group">
+    <h3>Clothes Details:</h3>
+    <div class="item-input">
+      <label for="name">Name: </label>
+      <input type="text" th:field="*{name}" name="name" placeholder="Item Name" required/>
+    </div>
+
+    <div class="item-input">
+      <label for="brand">Brand: </label>
+      <input type="text" th:field="*{brand}" name="brand" placeholder="Brand Name" required/>
+    </div>
+
+    <div class="item-input">
+      <label for="year">Year: </label>
+      <input type="number" th:field="*{year}" name="year" placeholder="Year" min="2000" max="2025" required/>
+    </div>
+
+    <div class="item-input">
+      <label for="price">Price: </label>
+      <input type="number" step="0.01" th:field="*{price}" name="price" placeholder="Price" min="0.01" required/>
+    </div>
+  </div>
+
+  <div class="submit-btn">
+    <button type="submit"><b>Add Clothes to Inventory</b></button>
+  </div>
+</form>
+
+<div class="back-link">
+  <a th:href="@{/warehouse/clothes}">View All Clothes</a>
+</div>
+</body>
+</html>

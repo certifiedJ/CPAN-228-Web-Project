@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Clothes Management</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/admin.css}">
+</head>
+<body>
+    <div class="admin-container">
+        <h1>Clothes Management</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Brand</th>
+                    <th>Year</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="clothes : ${clothesList}">
+                    <td th:text="${clothes.id}"></td>
+                    <td th:text="${clothes.name}"></td>
+                    <td th:text="${clothes.brand}"></td>
+                    <td th:text="${clothes.year}"></td>
+                    <td th:text="${clothes.price}"></td>
+                    <td>
+                        <form th:action="@{/admin/clothes/delete}" method="post">
+                            <input type="hidden" name="id" th:value="${clothes.id}" />
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <a href="/warehouse/clothes">Back to Warehouse</a>
+    </div>
+</body>
+</html>

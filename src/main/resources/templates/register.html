@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Register</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles/register.css}">
+</head>
+
+<body>
+<div class="register-container">
+    <h1>Register</h1>
+    <form action="#" th:action="@{/register}" th:object="${registrationForm}" method="post">
+        <div class="input-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" th:field="*{username}" required />
+            <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username Error</div>
+        </div>
+        <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" th:field="*{password}" required />
+            <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</div>
+        </div>
+        <div class="input-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" th:field="*{confirmPassword}" required />
+            <div th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">Confirm Password Error</div>
+        </div>
+        <div class="input-group">
+            <label for="role">Role</label>
+            <select id="role" th:field="*{role}" required>
+                <option value="">Select a role</option>
+                <option value="ADMIN">Admin</option>
+                <option value="WAREHOUSE_EMPLOYEE">Warehouse Employee</option>
+                <option value="REGULAR_USER">Regular User</option>
+            </select>
+            <div th:if="${#fields.hasErrors('role')}" th:errors="*{role}">Role Error</div>
+        </div>
+        <button type="submit" class="register-btn">Register</button>
+        <a th:href="@{/login}" class="button">Press here to login!</a>
+    </form>
+</div>
+</body>
+
+</html>

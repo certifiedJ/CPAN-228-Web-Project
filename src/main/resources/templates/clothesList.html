@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <title>Clothes Warehouse - Clothes List</title>
+  <link rel="stylesheet" th:href="@{/styles/styles.css}"/>
+</head>
+<body>
+<h1>Clothing Inventory</h1>
+
+<div class="filter-section">
+  <div class="sort-options">
+    <a th:href="@{/warehouse/clothes}" class="button">Sort by ID</a>
+    <a th:href="@{/warehouse/clothes/sort}" class="button">Sort by Brand</a>
+    <a th:href="@{/warehouse}" class="add_button" sec:authorize="hasAnyRole('ADMIN', 'WAREHOUSE_EMPLOYEE')">Add New Clothes</a>
+  </div>
+
+  <div class="filter-options">
+    <h3>Filter by Brand (2022 items)</h3>
+    <form th:action="@{/warehouse/clothes/brand2022}" method="get">
+      <input type="text" name="brand" th:value="${param.brand}" placeholder="Enter brand name" required>
+      <button type="submit">Filter</button>
+    </form>
+  </div>
+</div>
+
+<div th:if="${filterApplied}" class="filter-info">
+  <p th:text="${'Currently showing: ' + filterDescription}"></p>
+  <a th:href="@{/warehouse/clothes}" class="button">Clear Filter</a>
+</div>
+
+<table>
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Brand</th>
+    <th>Year</th>
+    <th>Price</th>
+    <th sec:authorize="hasRole('ADMIN')">Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="clothes : ${clothesList}">
+    <td th:text="${clothes.id}">ID</td>
+    <td th:text="${clothes.name}">Name</td>
+    <td th:text="${clothes.brand}">Brand</td>
+    <td th:text="${clothes.year}">Year</td>
+    <td th:text="${'$' + #numbers.formatDecimal(clothes.price, 1, 2)}">Price</td>
+    <td sec:authorize="hasRole('ADMIN')">
+      <a th:href="@{/admin/clothes/delete(id=${clothes.id})}" class="delete_button">Delete</a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+<div class="pagination" th:if="${totalPages != null && totalPages > 0}">
+  <span>Page:</span>
+  <span th:each="i: ${#numbers.sequence(0, totalPages - 1)}">
+    <a th:if="${param.brand != null}"
+       th:href="@{/warehouse/clothes/brand2022(page=${i}, brand=${param.brand})}"
+       th:text="${i + 1}"
+       th:class="${currentPage == i ? 'active' : ''}"></a>
+
+    <a th:if="${sortedByBrand != null && param.brand == null}"
+       th:href="@{/warehouse/clothes/sort(page=${i})}"
+       th:text="${i + 1}"
+       th:class="${currentPage == i ? 'active' : ''}"></a>
+
+    <a th:if="${param.brand == null && sortedByBrand == null}"
+       th:href="@{/warehouse/clothes(page=${i})}"
+       th:text="${i + 1}"
+       th:class="${currentPage == i ? 'active' : ''}"></a>
+  </span>
+</div>
+
+</body>
+</html>

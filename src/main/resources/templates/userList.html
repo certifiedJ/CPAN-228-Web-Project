@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Clothes Warehouse - User List</title>
+    <link rel="stylesheet" th:href="@{/styles/styles.css}"/>
+</head>
+<body>
+<h1>User Management</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Role</th>
+        <th>Full Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${userList}">
+        <td th:text="${user.id}">ID</td>
+        <td th:text="${user.username}">Username</td>
+        <td th:text="${user.role}">Role</td>
+        <td th:text="${user.fullName}">Full Name</td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
