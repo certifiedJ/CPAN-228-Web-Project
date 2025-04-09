@@ -15,6 +15,9 @@
             <a href="/warehouse/clothes" class="action-button">Manage Clothes</a>
             <a href="/admin/users" class="action-button">Monitor Users</a>
         </div>
+        <div sec:authorize="hasRole('ADMIN')">
+            <a href="/admin/distribution-centres">View Centres</a>
+        </div>
     </div>
 </body>
 </html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distribution Centres</title>
+</head>
+<body>
+    <h1>Distribution Centres</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Items</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="centre : ${centres}">
+                <td th:text="${centre.id}"></td>
+                <td th:text="${centre.name}"></td>
+                <td th:text="${centre.items}"></td>
+                <td th:text="${centre.latitude}"></td>
+                <td th:text="${centre.longitude}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
