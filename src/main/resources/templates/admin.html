@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,11 +12,9 @@
         <p>Welcome to the Admin Panel. Here, you can manage the application and its resources.</p>
         
         <div class="admin-actions">
+            <a href="/distribution-centres/all" class="action-button">View Centres</a>
             <a href="/warehouse/clothes" class="action-button">Manage Clothes</a>
             <a href="/admin/users" class="action-button">Monitor Users</a>
-        </div>
-        <div sec:authorize="hasRole('ADMIN')">
-            <a href="/admin/distribution-centres">View Centres</a>
         </div>
     </div>
 </body>

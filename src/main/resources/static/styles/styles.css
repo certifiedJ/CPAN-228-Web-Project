@@ -68,7 +68,7 @@ img {
     background-color: #45a049;
 }
 
-.add_button {
+.add_button, .find_button {
     background-color: #45a049;
     color: white;
     padding: 10px 20px;
