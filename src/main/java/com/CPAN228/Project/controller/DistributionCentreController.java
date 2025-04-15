@@ -8,19 +8,29 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+//import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
+
+import com.CPAN228.Project.service.DistributionCentreService;
 
 import java.util.List;
 
 @Controller
 @RequestMapping("/distribution-centres")
 public class DistributionCentreController {
+
+    private final DistributionCentreService distributionCentreService;
+
+    public DistributionCentreController(DistributionCentreService distributionCentreService) {
+        this.distributionCentreService = distributionCentreService;
+    }
 
     @GetMapping("/all")
     public String getAllDistributionCentres(Model model) {
@@ -53,4 +63,18 @@ public class DistributionCentreController {
     public String findDistributionCentres(Model model) {
         return "requestForm";
     }
+
+    
+
+    @PostMapping("/distribution-centres/request")
+    public String requestItem(@RequestParam String name, @RequestParam String brand, Model model) {
+    boolean isSuccessful = distributionCentreService.requestItem(name, brand);
+    if (isSuccessful) {
+        model.addAttribute("message", "Stock replenished successfully!");
+        return "success";
+    } else {
+        model.addAttribute("error", "Stock can’t be replenished.");
+        return "error";
+    }
+}
 }

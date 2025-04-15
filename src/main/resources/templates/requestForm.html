@@ -2,9 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/styles/styles.css}"/>
+    <title>Request Item</title>
 </head>
 <body>
-We do request operation and show response here.
+    <h1>Request Item from Distribution Centres</h1>
+    <form action="/distribution-centres/request" method="post">
+        <label for="name">Item Name:</label>
+        <input type="text" id="name" name="name" required>
+        <br>
+        <label for="brand">Brand:</label>
+        <select id="brand" name="brand" required>
+            <option value="BrandA">Nike</option>
+            <option value="BrandB">Adidas</option>
+            <option value="BrandC">North Face</option>
+            <option value="BrandD">Levi's</option>
+            <option value="BrandF">H&M</option>
+        </select>
+        <br>
+        <button type="submit">Submit</button>
+    </form>
 </body>
 </html>
