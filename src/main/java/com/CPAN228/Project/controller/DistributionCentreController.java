@@ -1,29 +1,17 @@
 package com.CPAN228.Project.controller;
 
-
 import com.CPAN228.Project.model.DistributionCentres;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-//import org.springframework.security.access.prepost.PreAuthorize;
+import com.CPAN228.Project.model.DistributionItemDTO;
+import com.CPAN228.Project.service.DistributionCentreService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.client.RestTemplate;
-
-import com.CPAN228.Project.service.DistributionCentreService;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Controller
 @RequestMapping("/distribution-centres")
+@SessionAttributes("availableItems")
 public class DistributionCentreController {
 
     private final DistributionCentreService distributionCentreService;
@@ -34,47 +22,75 @@ public class DistributionCentreController {
 
     @GetMapping("/all")
     public String getAllDistributionCentres(Model model) {
-        RestTemplate restTemplate = new RestTemplate();
-        String url = "http://localhost:8081/api/distribution-centres";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth("admin", "admin");
-        HttpEntity<String> request = new HttpEntity<>(headers);
-
         try {
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
-            if (response.getStatusCode().is2xxSuccessful()) {
-                ObjectMapper objectMapper = new ObjectMapper();
-                List<DistributionCentres> centres = objectMapper.readValue(
-                        response.getBody(),
-                        new TypeReference<List<DistributionCentres>>() {}
-                );
-                model.addAttribute("centres", centres);
-            } else {
-                model.addAttribute("error", "Failed to retrieve data: " + response.getStatusCode());
-            }
+            List<DistributionCentres> centres = distributionCentreService.getAllCentres();
+            model.addAttribute("centres", centres);
         } catch (Exception e) {
-            e.printStackTrace();  // Detailed error logging
-            model.addAttribute("error", "Failed to parse distribution centres data: " + e.getMessage());
+            model.addAttribute("error", "Failed to retrieve distribution centres: " + e.getMessage());
         }
         return "admin-distribution-centres";
     }
 
     @GetMapping("/find")
-    public String findDistributionCentres(Model model) {
+    public String findDistributionCentres() {
         return "requestForm";
     }
 
-    
+    @PostMapping("/request")
+    public String requestItem(
+            @RequestParam String name,
+            @RequestParam String brand,
+            Model model) {
 
-    @PostMapping("/distribution-centres/request")
-    public String requestItem(@RequestParam String name, @RequestParam String brand, Model model) {
-    boolean isSuccessful = distributionCentreService.requestItem(name, brand);
-    if (isSuccessful) {
-        model.addAttribute("message", "Stock replenished successfully!");
-        return "success";
-    } else {
-        model.addAttribute("error", "Stock can’t be replenished.");
-        return "error";
+        try {
+            List<DistributionItemDTO> availableItems = distributionCentreService.findItemsByNameAndBrand(name, brand);
+            model.addAttribute("availableItems", availableItems);
+            model.addAttribute("searchName", name);
+            model.addAttribute("searchBrand", brand);
+            return "itemConfirmation";
+        } catch (Exception e) {
+            model.addAttribute("error", "Error processing request: " + e.getMessage());
+            return "requestError";
+        }
     }
-}
+
+    @PostMapping("/confirm")
+    public String confirmItemRequest(
+            @RequestParam("selectedItemIndex") int selectedItemIndex,
+            Model model) {
+
+        try {
+            // Get the previously stored list of items from the model
+            @SuppressWarnings("unchecked")
+            List<DistributionItemDTO> availableItems =
+                    (List<DistributionItemDTO>) model.asMap().get("availableItems");
+
+            // If items aren't in the model, we might need to fetch them again
+            if (availableItems == null || availableItems.isEmpty()) {
+                model.addAttribute("error", "Session expired or no items available");
+                return "requestError";
+            }
+
+            // Validate index
+            if (selectedItemIndex < 0 || selectedItemIndex >= availableItems.size()) {
+                model.addAttribute("error", "Invalid item selection");
+                return "requestError";
+            }
+
+            // Get selected item and process
+            DistributionItemDTO selectedItem = availableItems.get(selectedItemIndex);
+            boolean success = distributionCentreService.confirmItemRequest(selectedItem);
+
+            if (success) {
+                model.addAttribute("message", "Stock replenished successfully!");
+                return "requestSuccess";
+            } else {
+                model.addAttribute("error", "Failed to update inventory");
+                return "requestError";
+            }
+        } catch (Exception e) {
+            model.addAttribute("error", "Error processing confirmation: " + e.getMessage());
+            return "requestError";
+        }
+    }
 }

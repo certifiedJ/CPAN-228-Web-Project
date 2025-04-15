@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,21 +7,24 @@
     <title>Request Item</title>
 </head>
 <body>
-    <div class="request-form-container">
-        <h1>Request Item from Distribution Centres</h1>
-        <form action="/distribution-centres/request" method="post">
-            <label for="name">Item Name:</label>
-            <input type="text" id="name" name="name" required>
-            <label for="brand">Brand:</label>
-            <select id="brand" name="brand" required>
-                <option value="BrandA">Nike</option>
-                <option value="BrandB">Adidas</option>
-                <option value="BrandC">North Face</option>
-                <option value="BrandD">Levi's</option>
-                <option value="BrandF">H&M</option>
-            </select>
-            <button type="submit">Submit</button>
-        </form>
-    </div>
+<div class="request-form-container">
+    <h1>Request Item from Distribution Centres</h1>
+    <form th:action="@{/distribution-centres/request}" method="post">
+        <input type="hidden" name="_csrf" th:value="${_csrf?.token}"/>
+        <label for="name">Item Name:</label>
+        <input type="text" id="name" name="name" required>
+        <label for="brand">Brand:</label>
+        <select id="brand" name="brand" required>
+            <option value="Nike">Nike</option>
+            <option value="Adidas">Adidas</option>
+            <option value="North Face">North Face</option>
+            <option value="Levi's">Levi's</option>
+            <option value="H&M">H&M</option>
+            <option value="Gap">Gap</option>
+            <option value="Zara">Zara</option>
+        </select>
+        <button type="submit">Submit</button>
+    </form>
+</div>
 </body>
 </html>

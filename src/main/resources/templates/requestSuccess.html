@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Request Success</title>
+  <link rel="stylesheet" th:href="@{/styles/styles.css}"/>
+</head>
+<body>
+<div class="success-container">
+  <h1>Request Successful</h1>
+  <p th:text="${message}">Stock replenished successfully!</p>
+  <a th:href="@{/distribution-centres/find}" class="button">Request More Items</a>
+  <a th:href="@{/warehouse/clothes}" class="button">View Inventory</a>
+</div>
+</body>
+</html>

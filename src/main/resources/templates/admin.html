@@ -12,7 +12,8 @@
         <p>Welcome to the Admin Panel. Here, you can manage the application and its resources.</p>
         
         <div class="admin-actions">
-            <a href="/distribution-centres/all" class="action-button">View Centres</a>
+            <a th:href="@{/distribution-centres/all}" class="action-button">View Distribution Centres</a>
+            <a th:href="@{/distribution-centres/find}" class="action-button">Request Items</a>
             <a href="/warehouse/clothes" class="action-button">Manage Clothes</a>
             <a href="/admin/users" class="action-button">Monitor Users</a>
         </div>
