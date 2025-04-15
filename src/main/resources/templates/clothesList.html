@@ -36,6 +36,7 @@
     <th>Brand</th>
     <th>Year</th>
     <th>Price</th>
+    <th>Quantity</th>
     <th sec:authorize="hasRole('ADMIN')">Actions</th>
   </tr>
   </thead>
@@ -46,6 +47,7 @@
     <td th:text="${clothes.brand}">Brand</td>
     <td th:text="${clothes.year}">Year</td>
     <td th:text="${'$' + #numbers.formatDecimal(clothes.price, 1, 2)}">Price</td>
+    <td th:text="${clothes.quantity}">Quantity</td>
     <td sec:authorize="hasRole('ADMIN')">
       <a th:href="@{/admin/clothes/delete(id=${clothes.id})}" class="delete_button">Delete</a>
     </td>

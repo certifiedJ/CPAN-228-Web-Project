@@ -4,6 +4,7 @@ import com.CPAN228.Project.data.ClothesRepository;
 import com.CPAN228.Project.model.Clothes;
 import com.CPAN228.Project.model.DistributionCentres;
 import com.CPAN228.Project.model.DistributionItemDTO;
+import com.CPAN228.Project.model.ItemsDTO;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,26 @@ public class DistributionCentreServiceImpl implements DistributionCentreService 
                 return objectMapper.readValue(
                         response.getBody(),
                         new TypeReference<List<DistributionCentres>>() {});
+            } else {
+                throw new RuntimeException("Failed to retrieve distribution centres: " + response.getStatusCode());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error connecting to distribution centre service", e);
+        }
+    }
+
+    @Override
+    public List<ItemsDTO> getAllItems(){
+        String url = "http://localhost:8081/api/items/all";
+        HttpHeaders headers = createHeaders();
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return objectMapper.readValue(
+                        response.getBody(),
+                        new TypeReference<List<ItemsDTO>>() {});
             } else {
                 throw new RuntimeException("Failed to retrieve distribution centres: " + response.getStatusCode());
             }

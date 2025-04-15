@@ -2,12 +2,14 @@ package com.CPAN228.Project.controller;
 
 import com.CPAN228.Project.model.DistributionCentres;
 import com.CPAN228.Project.model.DistributionItemDTO;
+import com.CPAN228.Project.model.ItemsDTO;
 import com.CPAN228.Project.service.DistributionCentreService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/distribution-centres")
@@ -32,7 +34,20 @@ public class DistributionCentreController {
     }
 
     @GetMapping("/find")
-    public String findDistributionCentres() {
+    public String findDistributionCentres(Model model) {
+        try {
+            List<ItemsDTO> items = distributionCentreService.getAllItems();
+            // Extract unique brands
+            List<String> brands = items.stream()
+                    .map(ItemsDTO::getBrand)
+                    .distinct()
+                    .collect(Collectors.toList());
+
+            // Add brands to the model
+            model.addAttribute("brands", brands);
+        } catch (Exception e) {
+            model.addAttribute("error", "Failed to retrieve distribution centres: " + e.getMessage());
+        }
         return "requestForm";
     }
 

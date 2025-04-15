@@ -1,31 +1,88 @@
-<form th:action="@{/distribution-centres/confirm}" method="post">
-  <input type="hidden" name="_csrf" th:value="${_csrf?.token}"/>
-  <table>
-    <thead>
-    <tr>
-      <th>Select</th>
-      <th>Brand</th>
-      <th>Name</th>
-      <th>Distribution Centre</th>
-      <th>Available Quantity</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="item, itemStat : ${availableItems}">
-      <td>
-        <input type="radio" name="selectedItemIndex" th:value="${itemStat.index}"
-               th:checked="${itemStat.index == 0}" required/>
-      </td>
-      <td th:text="${item.brand}">Brand</td>
-      <td th:text="${item.name}">Name</td>
-      <td th:text="${item.distributionCentreName}">Centre</td>
-      <td th:text="${item.quantity}">Quantity</td>
-    </tr>
-    </tbody>
-  </table>
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/styles/styles.css}"/>
+    <title>Item Confirmation</title>
+</head>
+<body>
+<div class="confirmation-form-container">
+    <h1>Confirm Item Selection</h1>
+    <form th:action="@{/distribution-centres/confirm}" method="post" onsubmit="return validateForm()">
+        <input type="hidden" name="_csrf" th:value="${_csrf?.token}"/>
+        <table>
+            <thead>
+            <tr>
+                <th>Select</th>
+                <th>Brand</th>
+                <th>Name</th>
+                <th>Distribution Centre</th>
+                <th>Available Quantity</th>
+                <th>Replenish Number</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item, itemStat : ${availableItems}">
+                <td>
+                    <input type="radio" name="selectedItemIndex" th:value="${itemStat.index}"
+                           onchange="enableReplenishInput(this)" required/>
+                </td>
+                <td th:text="${item.brand}">Brand</td>
+                <td th:text="${item.name}">Name</td>
+                <td th:text="${item.distributionCentreName}">Centre</td>
+                <td th:text="${item.quantity}" id="quantity-${itemStat.index}">Quantity</td>
+                <td>
+                    <input type="number" name="replenishNumber" value="" disabled required/>
+                </td>
+            </tr>
+            </tbody>
+        </table>
 
-  <div class="form-actions">
-    <button type="submit" class="button">Confirm Selection</button>
-    <a th:href="@{/distribution-centres/find}" class="button">Cancel</a>
-  </div>
-</form>
+        <div class="form-actions">
+            <button type="submit" class="button">Confirm Selection</button>
+            <a th:href="@{/distribution-centres/find}" class="button">Back</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    function enableReplenishInput(selectedRadio) {
+        // Disable all replenish inputs and set to blank
+        const replenishInputs = document.querySelectorAll('input[name="replenishNumber"]');
+        replenishInputs.forEach(input => {
+            input.disabled = true;
+            input.value = "";
+        });
+
+        // Enable the selected row's replenish input and set default to 1
+        const selectedIndex = selectedRadio.value;
+        const replenishInput = document.querySelector(`input[name="replenishNumber"]:nth-of-type(${parseInt(selectedIndex) + 1})`);
+        if (replenishInput) {
+            replenishInput.disabled = false;
+            replenishInput.value = 1;
+        }
+    }
+
+    function validateForm() {
+        const selectedRadio = document.querySelector('input[name="selectedItemIndex"]:checked');
+        if (!selectedRadio) {
+            alert("Please select an item.");
+            return false;
+        }
+
+        const selectedIndex = selectedRadio.value;
+        const availableQuantity = parseInt(document.getElementById(`quantity-${selectedIndex}`).innerText);
+        const replenishInput = document.querySelector(`input[name="replenishNumber"]:nth-of-type(${parseInt(selectedIndex) + 1})`);
+        const replenishNumber = parseInt(replenishInput.value);
+
+        if (replenishNumber > availableQuantity) {
+            alert("Replenish number cannot be greater than available quantity.");
+            return false;
+        }
+
+        return true;
+    }
+</script>
+</body>
+</html>

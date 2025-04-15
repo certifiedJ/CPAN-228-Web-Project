@@ -21,12 +21,14 @@ public class Clothes {
     @Column(name = "product_year")
     private int year;
     private double price;
+    private int quantity;
 
-    public Clothes(Long id, String name, String brand, int year, double price) {
+    public Clothes(Long id, String name, String brand, int year, double price, int quantity) {
         this.id = id;
         this.name = name;
         this.brand = brand;
         this.year = year;
         this.price = price;
+        this.quantity = quantity;
     }
 }

@@ -16,14 +16,14 @@ public class DatabaseLoader {
      public CommandLineRunner loadData(ClothesRepository clothesRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
             // Add sample clothes
-            clothesRepository.save(new Clothes(null, "Cotton T-Shirt", "Nike", 2022, 29.99));
-            clothesRepository.save(new Clothes(null, "Running Shorts", "Adidas", 2022, 39.99));
-            clothesRepository.save(new Clothes(null, "Winter Jacket", "North Face", 2023, 199.99));
-            clothesRepository.save(new Clothes(null, "Denim Jeans", "Levi's", 2022, 79.99));
-            clothesRepository.save(new Clothes(null, "Summer Dress", "H&M", 2023, 59.99));
-            clothesRepository.save(new Clothes(null, "Wool Sweater", "Gap", 2022, 69.99));
-            clothesRepository.save(new Clothes(null, "Pleated Skirt", "Zara", 2021, 49.99));
-            clothesRepository.save(new Clothes(null, "Fleece Hoodie", "Nike", 2022, 89.99));
+            clothesRepository.save(new Clothes(null, "Cotton T-Shirt", "Nike", 2022, 29.99, 1));
+            clothesRepository.save(new Clothes(null, "Running Shorts", "Adidas", 2022, 39.99, 1));
+            clothesRepository.save(new Clothes(null, "Winter Jacket", "North Face", 2023, 199.99, 1));
+            clothesRepository.save(new Clothes(null, "Denim Jeans", "Levi's", 2022, 79.99, 1));
+            clothesRepository.save(new Clothes(null, "Summer Dress", "H&M", 2023, 59.99, 1));
+            clothesRepository.save(new Clothes(null, "Wool Sweater", "Gap", 2022, 69.99, 1));
+            clothesRepository.save(new Clothes(null, "Pleated Skirt", "Zara", 2021, 49.99, 1));
+            clothesRepository.save(new Clothes(null, "Fleece Hoodie", "Nike", 2022, 89.99, 1));
 
             // Add default users
             userRepository.save(new User(null, "admin", passwordEncoder.encode("admin"), "ADMIN"));
