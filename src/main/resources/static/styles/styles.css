@@ -179,3 +179,46 @@ tr:nth-child(even) {
     text-align: center;
     margin-top: 30px;
 }
+
+.request-form-container {
+    background-color: #ffffff;
+    padding: 30px;
+    max-width: 600px;
+    margin: 50px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.request-form-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.request-form-container label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.request-form-container input[type="text"],
+.request-form-container select {
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.request-form-container button[type="submit"] {
+    background-color: #008CBA;
+    color: white;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.request-form-container button[type="submit"]:hover {
+    background-color: #005f73;
+}

@@ -7,21 +7,21 @@
     <title>Request Item</title>
 </head>
 <body>
-    <h1>Request Item from Distribution Centres</h1>
-    <form action="/distribution-centres/request" method="post">
-        <label for="name">Item Name:</label>
-        <input type="text" id="name" name="name" required>
-        <br>
-        <label for="brand">Brand:</label>
-        <select id="brand" name="brand" required>
-            <option value="BrandA">Nike</option>
-            <option value="BrandB">Adidas</option>
-            <option value="BrandC">North Face</option>
-            <option value="BrandD">Levi's</option>
-            <option value="BrandF">H&M</option>
-        </select>
-        <br>
-        <button type="submit">Submit</button>
-    </form>
+    <div class="request-form-container">
+        <h1>Request Item from Distribution Centres</h1>
+        <form action="/distribution-centres/request" method="post">
+            <label for="name">Item Name:</label>
+            <input type="text" id="name" name="name" required>
+            <label for="brand">Brand:</label>
+            <select id="brand" name="brand" required>
+                <option value="BrandA">Nike</option>
+                <option value="BrandB">Adidas</option>
+                <option value="BrandC">North Face</option>
+                <option value="BrandD">Levi's</option>
+                <option value="BrandF">H&M</option>
+            </select>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
 </body>
 </html>
