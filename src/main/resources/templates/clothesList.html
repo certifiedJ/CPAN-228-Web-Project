@@ -12,6 +12,7 @@
     <a th:href="@{/warehouse/clothes}" class="button">Sort by ID</a>
     <a th:href="@{/warehouse/clothes/sort}" class="button">Sort by Brand</a>
     <a th:href="@{/warehouse}" class="add_button" sec:authorize="hasAnyRole('ADMIN', 'WAREHOUSE_EMPLOYEE')">Add New Clothes</a>
+    <a th:href="@{/distribution-centres/find}" class="find_button">Find and Replenish</a>
   </div>
 
   <div class="filter-options">

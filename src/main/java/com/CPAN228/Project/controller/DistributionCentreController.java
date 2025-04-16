@@ -1,14 +1,15 @@
 package com.CPAN228.Project.controller;
 
-import com.CPAN228.Project.model.DistributionCentres;
-import com.CPAN228.Project.model.DistributionItemDTO;
-import com.CPAN228.Project.model.ItemsDTO;
+import com.CPAN228.Project.data.ClothesRepository;
+import com.CPAN228.Project.model.*;
 import com.CPAN228.Project.service.DistributionCentreService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -17,9 +18,11 @@ import java.util.stream.Collectors;
 public class DistributionCentreController {
 
     private final DistributionCentreService distributionCentreService;
+    private final ClothesRepository clothesRepository;
 
-    public DistributionCentreController(DistributionCentreService distributionCentreService) {
+    public DistributionCentreController(DistributionCentreService distributionCentreService, ClothesRepository clothesRepository) {
         this.distributionCentreService = distributionCentreService;
+        this.clothesRepository = clothesRepository;
     }
 
     @GetMapping("/all")
@@ -70,42 +73,92 @@ public class DistributionCentreController {
     }
 
     @PostMapping("/confirm")
-    public String confirmItemRequest(
-            @RequestParam("selectedItemIndex") int selectedItemIndex,
-            Model model) {
+    @SuppressWarnings("unchecked")
+    public String confirmItemRequest(HttpSession session,
+                                     @RequestParam("selectedItemIndex") int selectedItemIndex,
+                                     @RequestParam("replenishNumber") int replenishNumber) {
+        // Retrieve the list of available items from the session
+        List<DistributionItemDTO> availableItems = (List<DistributionItemDTO>) session.getAttribute("availableItems");
 
-        try {
-            // Get the previously stored list of items from the model
-            @SuppressWarnings("unchecked")
-            List<DistributionItemDTO> availableItems =
-                    (List<DistributionItemDTO>) model.asMap().get("availableItems");
-
-            // If items aren't in the model, we might need to fetch them again
-            if (availableItems == null || availableItems.isEmpty()) {
-                model.addAttribute("error", "Session expired or no items available");
-                return "requestError";
-            }
-
-            // Validate index
-            if (selectedItemIndex < 0 || selectedItemIndex >= availableItems.size()) {
-                model.addAttribute("error", "Invalid item selection");
-                return "requestError";
-            }
-
-            // Get selected item and process
-            DistributionItemDTO selectedItem = availableItems.get(selectedItemIndex);
-            boolean success = distributionCentreService.confirmItemRequest(selectedItem);
-
-            if (success) {
-                model.addAttribute("message", "Stock replenished successfully!");
-                return "requestSuccess";
-            } else {
-                model.addAttribute("error", "Failed to update inventory");
-                return "requestError";
-            }
-        } catch (Exception e) {
-            model.addAttribute("error", "Error processing confirmation: " + e.getMessage());
-            return "requestError";
+        // Check if the session data is valid and the index is within bounds
+        if (availableItems == null || selectedItemIndex < 0 || selectedItemIndex >= availableItems.size()) {
+            return "error"; // Redirect to an error page
         }
+
+        // Get the selected item using the index
+        DistributionItemDTO selectedItem = availableItems.get(selectedItemIndex);
+
+        // Extract the item details
+        String brand = selectedItem.getBrand();
+        String name = selectedItem.getName();
+        String distributionCentreName = selectedItem.getDistributionCentreName();
+        int availableQuantity = selectedItem.getQuantity();
+
+        // Basic validation: ensure replenishNumber is positive and does not exceed available quantity
+        if (replenishNumber <= 0 || replenishNumber > availableQuantity) {
+            return "error"; // Redirect to an error page
+        }
+
+        // Step 2: Check if cloth exists in warehouse
+        Optional<Clothes> clothOpt = clothesRepository.findByBrandAndName(brand, name);
+
+        // Step 3: If exists, update quantity
+        if (clothOpt.isPresent()) {
+            Clothes cloth = clothOpt.get();
+            cloth.setQuantity(cloth.getQuantity() + replenishNumber);
+            clothesRepository.save(cloth);
+        }
+        // Step 4: If not exists, insert new cloth
+        else {
+            Clothes newCloth = new Clothes();
+            newCloth.setBrand(brand);
+            newCloth.setYear(2025); //default year
+            newCloth.setPrice(199.22);
+            newCloth.setName(name);
+            newCloth.setQuantity(replenishNumber);
+            clothesRepository.save(newCloth);
+        }
+
+        // reduce item quantity on distribution centre side
+        // Get centreId
+        List<DistributionCentres> centres = distributionCentreService.getAllCentres();
+        Long centreId = null;
+        for (DistributionCentres centre : centres) {
+            if (centre.getName().equals(distributionCentreName)) {
+                centreId = centre.getId();
+                break;
+            }
+        }
+        if (centreId == null) {
+            return "error"; // Centre not found
+        }
+
+        // Get itemId
+        List<ItemsDTO> items = distributionCentreService.getAllItems();
+        Long itemId = null;
+        for (ItemsDTO item : items) {
+            if (item.getBrand().equals(brand) && item.getName().equals(name)) {
+                itemId = item.getId();
+                break;
+            }
+        }
+        if (itemId == null) {
+            return "error"; // Item not found
+        }
+
+        // Call service to update quantity
+        boolean success = distributionCentreService.updateItemQuantity(
+                centreId.intValue(), itemId.intValue(), replenishNumber
+        );
+        if (!success) {
+            return "error"; // API call failed
+        }
+
+        // Clean up the session
+        session.removeAttribute("availableItems");
+
+        // Redirect to a placeholder page (to be updated in later steps)
+        return "redirect:/warehouse/clothes";
+
     }
 }

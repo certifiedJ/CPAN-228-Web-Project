@@ -40,7 +40,7 @@
         </table>
 
         <div class="form-actions">
-            <button type="submit" class="button">Confirm Selection</button>
+            <button type="submit" class="replenish-button">Confirm Replenish</button>
             <a th:href="@{/distribution-centres/find}" class="button">Back</a>
         </div>
     </form>
@@ -48,19 +48,21 @@
 
 <script>
     function enableReplenishInput(selectedRadio) {
-        // Disable all replenish inputs and set to blank
+        // Disable all replenish inputs and clear values
         const replenishInputs = document.querySelectorAll('input[name="replenishNumber"]');
         replenishInputs.forEach(input => {
             input.disabled = true;
             input.value = "";
         });
 
-        // Enable the selected row's replenish input and set default to 1
-        const selectedIndex = selectedRadio.value;
-        const replenishInput = document.querySelector(`input[name="replenishNumber"]:nth-of-type(${parseInt(selectedIndex) + 1})`);
+        // Enable only the replenish input in the same row as the selected radio
+        // and set default value to 1
+        const selectedRow = selectedRadio.closest('tr');
+        const replenishInput = selectedRow.querySelector('input[name="replenishNumber"]');
         if (replenishInput) {
             replenishInput.disabled = false;
-            replenishInput.value = 1;
+            replenishInput.value = "1";
+            replenishInput.focus();
         }
     }
 
@@ -71,10 +73,15 @@
             return false;
         }
 
-        const selectedIndex = selectedRadio.value;
-        const availableQuantity = parseInt(document.getElementById(`quantity-${selectedIndex}`).innerText);
-        const replenishInput = document.querySelector(`input[name="replenishNumber"]:nth-of-type(${parseInt(selectedIndex) + 1})`);
+        const selectedRow = selectedRadio.closest('tr');
+        const availableQuantity = parseInt(selectedRow.querySelector('td:nth-child(5)').innerText);
+        const replenishInput = selectedRow.querySelector('input[name="replenishNumber"]');
         const replenishNumber = parseInt(replenishInput.value);
+
+        if (isNaN(replenishNumber) || replenishNumber <= 0) {
+            alert("Please enter a valid replenish number greater than zero.");
+            return false;
+        }
 
         if (replenishNumber > availableQuantity) {
             alert("Replenish number cannot be greater than available quantity.");
@@ -83,6 +90,25 @@
 
         return true;
     }
+
+    // Add blur event listeners to replenish inputs
+    document.addEventListener('DOMContentLoaded', function() {
+        const replenishInputs = document.querySelectorAll('input[name="replenishNumber"]');
+        replenishInputs.forEach(input => {
+            input.addEventListener('blur', function() {
+                // Check if the radio button in this row is still selected
+                const currentRow = this.closest('tr');
+                const radioInRow = currentRow.querySelector('input[type="radio"]');
+
+                if (!radioInRow.checked) {
+                    // If radio is not checked, disable and clear the input
+                    this.disabled = true;
+                    this.value = "";
+                }
+                // If radio is checked, keep the input enabled with its value
+            });
+        });
+    });
 </script>
 </body>
 </html>

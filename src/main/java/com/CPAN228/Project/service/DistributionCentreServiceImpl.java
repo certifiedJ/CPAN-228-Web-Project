@@ -121,18 +121,20 @@ public class DistributionCentreServiceImpl implements DistributionCentreService 
     }
 
     @Override
-    public boolean confirmItemRequest(DistributionItemDTO item) {
-        // Add item to warehouse
-        Clothes newItem = new Clothes();
-        newItem.setName(item.getName());
-        newItem.setBrand(item.getBrand());
-        newItem.setYear(2023); // Default current year
-        newItem.setPrice(49.99); // Default price
-
-        clothesRepository.save(newItem);
-
-        // Remove from distribution center
-        return removeItemFromDistributionCentre(item.getCentreId(), item.getItemId());
+    public boolean updateItemQuantity(int centerId, int itemId, int quantity) {
+        String url = String.format(
+                "http://localhost:8081/api/distribution-centres/%d/items?itemId=%d&quantity=%d",
+                centerId, itemId, -quantity // Negative to reduce quantity
+        );
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth("admin", "admin");
+        HttpEntity<String> request = new HttpEntity<>(headers);
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, request, String.class);
+            return response.getStatusCode().is2xxSuccessful();
+        } catch (Exception e) {
+            return false; // API call failed
+        }
     }
 
     @Override

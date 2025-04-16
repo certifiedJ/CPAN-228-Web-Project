@@ -11,6 +11,7 @@ public interface DistributionCentreService {
     List<DistributionItemDTO> findItemsByNameAndBrand(String name, String brand);
 
     List<ItemsDTO> getAllItems();
-    boolean confirmItemRequest(DistributionItemDTO item);
+
+    boolean updateItemQuantity(int centerId, int itemId, int quantity);
     boolean removeItemFromDistributionCentre(Long centreId, Long itemId);
 }

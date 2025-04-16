@@ -79,8 +79,20 @@ img {
     text-decoration: none;
 }
 
-.delete_button {
-    background-color: #f44336;
+.delete_button, .replenish-button {
+    background-color: #f04336;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+
+.replenish-button {
+    background-color: #002FA7;
     color: white;
     padding: 10px 20px;
     border: none;

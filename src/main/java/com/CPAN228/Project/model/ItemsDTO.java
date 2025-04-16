@@ -12,6 +12,5 @@ public class ItemsDTO {
     private String brand;
     private String name;
     private int year;
-//    private LocalDateTime createdAt;
     private double price;
 }
