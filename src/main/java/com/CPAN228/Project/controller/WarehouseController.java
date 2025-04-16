@@ -65,12 +65,12 @@ public class WarehouseController {
         return "clothesList";
     }
 
-    @GetMapping("/clothes/brand2022")
-    public String showClothesByBrandAndYear(@RequestParam String brand, Model model) {
-        List<Clothes> clothesList = clothesRepository.findByBrandAndYear(brand, 2022);
+    @GetMapping("/clothes/byBrand")
+    public String showClothesByBrand(@RequestParam String brand, Model model) {
+        List<Clothes> clothesList = clothesRepository.findByBrand(brand);
         model.addAttribute("clothesList", clothesList);
         model.addAttribute("filterApplied", true);
-        model.addAttribute("filterDescription", "Brand: " + brand + ", Year: 2022");
+        model.addAttribute("filterDescription", "Brand: " + brand);
         return "clothesList";
     }
 

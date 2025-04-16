@@ -12,12 +12,12 @@
     <a th:href="@{/warehouse/clothes}" class="button">Sort by ID</a>
     <a th:href="@{/warehouse/clothes/sort}" class="button">Sort by Brand</a>
     <a th:href="@{/warehouse}" class="add_button" sec:authorize="hasAnyRole('ADMIN', 'WAREHOUSE_EMPLOYEE')">Add New Clothes</a>
-    <a th:href="@{/distribution-centres/find}" class="find_button">Find and Replenish</a>
+    <a th:href="@{/distribution-centres/find}" class="find_button" sec:authorize="hasRole('ADMIN')">Find and Replenish</a>
   </div>
 
   <div class="filter-options">
-    <h3>Filter by Brand (2022 items)</h3>
-    <form th:action="@{/warehouse/clothes/brand2022}" method="get">
+    <h3>Filter by Brand</h3>
+    <form th:action="@{/warehouse/clothes/byBrand}" method="get">
       <input type="text" name="brand" th:value="${param.brand}" placeholder="Enter brand name" required>
       <button type="submit">Filter</button>
     </form>
